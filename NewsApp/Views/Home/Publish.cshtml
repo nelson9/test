@@ -1,0 +1,69 @@
+﻿
+
+
+
+<div class="row">
+    <div class="">
+        <h1>Add News Item</h1>
+        <form id="newsForm" method="post" action="api/article/"
+              enctype="application/x-www-form-urlencoded">
+            <div>
+                <label for="status">Title</label>
+            </div>
+            <div>
+                <input required name="title" type="text" />
+            </div>
+            <div>
+                <label for="body">News</label>
+            </div>
+            <div>
+                <textarea required name="body"></textarea>
+            </div>
+            <div>
+                <input type="submit" id="submitArticle" value="Submit" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row" id="message"></div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document)
+            .ready(function () {
+
+                bindEvents();
+                $('#newsForm').validate();
+
+            });
+
+
+        function bindEvents() {
+            $("#submitArticle").on('click',
+                    function (e) {
+                        e.preventDefault();
+                        addNewArticle();
+                    });
+        }
+
+        function addNewArticle () {
+
+           // $('#newsForm').validate();
+         
+            var formData = $('#newsForm').serialize() + "&publishDate=" + new Date().toJSON();
+            var jqxhr = $.post('../api/article/', formData)
+                .success(function () {
+                    var loc = jqxhr.getResponseHeader('Location');
+                    var a = $('<a/>', { href: loc, text: "You can view your new article here" });
+                    $('#message').html(a);
+                })
+                .error(function () {
+                    $('#message').html("Error posting your article");
+                });
+            return false;
+        };
+    </script>
+
+}
